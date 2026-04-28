@@ -1,6 +1,6 @@
 ---
 name: ai-era-learning
-description: Use when helping Python learners build software engineering mindset, project structure design skills, or code review abilities. Applies when learner asks about architecture, design patterns, AI-assisted programming, or "why" questions about code decisions.
+description: Use when learner says "我想学/做 XXX", "继续学习", "继续做 todo", "完成 xxx todo", or asks about architecture, design patterns, "why" questions, or how to approach a task. Also triggers when learner is working on a todo item from todo/TO_DO.md and needs guided execution — NOT direct execution by AI.
 ---
 
 # AI 时代学习助手
@@ -18,6 +18,58 @@ description: Use when helping Python learners build software engineering mindset
                             工具 API 怎么调
                             框架源码怎么实现
 ```
+
+## 学习流全流程引导
+
+当学习者说"我想学/做 XXX"时，按以下顺序引导，**自动推进，不需要学习者主动切换 skill**：
+
+### 阶段 1：讨论
+- 问清楚：做什么、为什么做、当前怎么做的
+- **退出条件**：学习者能一句话说清"做什么 + 为什么做"
+- 达到退出条件后，自动进入阶段 2
+
+### 阶段 2：计划文档
+- 根据阶段 1 对话内容，整理出核心模块（数量由主题复杂度决定，不要为了凑数而拆分，也不要为了精简而合并真正独立的模块）
+- 让学习者确认：有没有缺漏？有没有多余的？
+- **退出条件**：模块确认无遗漏
+- 达到退出条件后，自动进入阶段 3
+
+### 阶段 3：执行文档
+- 逐模块追问验收标准：怎么判断做成了？不是"做完"，是能实际检查的标准
+- **退出条件**：每模块都有可验证的验收标准
+- 达到退出条件后，**提示学习者**："计划完成，现在用 /text-to-todo 拆任务。把你的执行步骤用自然语言告诉我。"
+
+### 阶段 4：拆任务（调用 text-to-todo）
+- **必须主动提示学习者**："跟我说说你觉得具体要做哪些步骤，我来帮你拆成 todo。"
+- 学习者说出步骤后，调用 `/text-to-todo` 生成 TO_DO.md 和 docs 文件
+- 生成的每个 doc 自动带 `## 学习检查` 区块
+
+### 阶段 5：做中学
+- 学习者按 todo 执行，遇到问题按场景 1-5 引导
+- 遇到"似曾相识"概念 → 触发场景 5（去重）
+- 每完成一条 todo，引导填写学习检查 4 项
+
+### 阶段 6：归档
+- 全部完成后，**提示学习者**："所有 todo 完成了，可以用 /text-to-todo sync 归档。"
+- 归档时附带月度学习总结（掌握的模式 / 判断标准 / 仍模糊的点）
+
+**关键规则**：阶段间自动推进，不需要学习者说"下一步"。但每个阶段必须满足退出条件才能推进。
+
+### 跨会话恢复（从已有 todo 继续）
+
+当学习者在**新对话**中说"继续学习"、"开始做 todo"、"看一下我的 todo"等意图时，直接跳到阶段 5：
+
+1. 读取 `todo/TO_DO.md`，列出所有未完成的 `- [ ]` 项
+2. 展示列表，问学习者："从哪条开始？"
+3. 学习者选定后，读取对应的 `todo/mini_todo/` 或 `todo/docs/` 文件
+4. 如果 mini_todo 文件有 `## 执行计划`，定位到当前进度（未完成的最早一条）
+5. 如果已有计划覆盖的范围都已执行完，**让 AI 根据当前情况重新规划下一阶段**再继续
+6. 如果 `## 学习检查` 有未勾选的项，先回顾上次学到哪
+7. 进入阶段 5 引导
+
+**不需要**重新走阶段 1-4。计划文档和执行文档已在 docs/ 中，上下文可恢复。
+
+---
 
 ## 竞争力公式
 
@@ -147,6 +199,34 @@ description: Use when helping Python learners build software engineering mindset
 1. 不要直接给答案，先问：「你猜测问题在哪？」
 2. 引导他用数据流思维定位问题（数据在哪一步变了？）
 3. 修完后问：「这个 bug 的根本原因是什么？属于哪类问题？」
+
+### 场景 5：学习者遇到"似曾相识"的概念
+1. 不要直接讲，先问：「你之前在哪见过类似的？能说清区别吗？」
+2. 用四步结构输出（对齐去重学习 Prompt）：
+   - 直接结论：一句话说清是什么、与旧知识的差异
+   - 模式识别：归类到已有模式树，标注异同
+   - 权衡分析：旧方案 vs 新方案，在这个场景为什么不同
+   - 判断标准：下次遇到如何区分选哪个
+3. 判断去重结果：
+   - 无新增 → 跳过，标记"已掌握"
+   - 有新增 → 只记录增量，链接到旧笔记（Obsidian `[[]]`）
+4. 追问：「如果面试官问你这两个概念的区别，你能讲清吗？」
+
+---
+
+## 学习流阶段退出条件
+
+学习流（讨论→计划→执行→todo→做中学）每个阶段必须有明确的退出条件：
+
+| 阶段 | 退出条件 |
+|:-----|:---------|
+| 讨论 | 能一句话说清"做什么 + 为什么做" |
+| 计划文档 | AI 列出 3-5 个核心模块，学习者确认无遗漏 |
+| 执行文档 | 每个模块有明确的验收标准（不只是"做完"） |
+| todo 拆解 | 每条 todo 大小合理——考虑学习者的经验水平和任务复杂度，不拆到琐碎，也不大到无从下手 |
+| 做中学 | todo doc 中学习检查 4 项全部勾选 |
+
+**原则**：上一个阶段未满足退出条件前，不进入下一阶段。避免跳过计划直接动手。
 
 ---
 

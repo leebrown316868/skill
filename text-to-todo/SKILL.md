@@ -24,10 +24,9 @@ Break user input into minimal executable todos (max 5), output to `todo/TO_DO` w
 ### Step 1: Parse User Input
 
 Extract distinct actionable items from user text. Rules:
-- Maximum 5 todos
-- Each todo = smallest executable unit user can perform
+- Upper bound on todo count: enough to cover the scope without overwhelming, merge related items when there are too many independent steps
+- Each todo = smallest executable unit user can perform, but don't over-split a coherent task into fragments
 - Preserve user's original wording — do NOT rewrite or reinterpret
-- If input has more than 5 logical steps, merge related items
 
 ### Step 2: Create Directory Structure
 
@@ -55,14 +54,39 @@ When a todo is placed into a long-term category (e.g. "长期to do", "规划中"
 3. The `[[]]` link in `TO_DO.md` points to `todo/mini_todo/<long-term-name>.md`
 4. Each mini-todo inside that file has its own `[[]]` link pointing to `todo/docs/` for explanation
 5. The long-term todo itself gets no `[[]]` link to `docs/` — its detail lives in the mini-todos
+6. **生成执行节奏建议**：拆完 mini-todos 后，先问学习者再给建议
 
-Structure:
+**执行节奏引导提示词**（拆完 mini-todos 后自动触发）：
+
+> 已拆完 X 条 mini-todo。在排每日计划之前，我需要了解你的情况：
+> 1. 你每天能投入多少时间？
+> 2. 有没有截止日期？
+> 3. 这些 mini-todo 里有没有你觉得特别难/特别容易的？
+>
+> 基于你的回答，我会给出执行节奏建议（按天/按周/按阶段），你确认后再生成计划表。
+
+**生成计划时 AI 应自主判断**：
+- 计划粒度（天/周/阶段）：根据总工作量 + 学习者每日可用时间 + 截止日期综合判断，不硬编码规则
+- 排列顺序：识别 mini-todo 之间的依赖关系，有依赖的串行，无依赖的可并行或自由安排
+- 只展开近期计划：远期计划会因实际进度偏离，只详细排近期可执行的范围，其余标为"待展开"，等当前阶段完成后再规划下一阶段
+- 预估时间应基于 mini-todo 的实际难度，不是一刀切
+
+Structure（由 AI 根据上述判断动态生成，以下为示例）：
 ```
 todo/TO_DO.md (long-term section):
 - [ ] 换微服务 [[mini_todo/换微服务]]
 
 todo/mini_todo/换微服务.md:
 # 换微服务
+
+## 执行计划
+| 天数 | mini-todo | 预估时间 |
+|:----:|:---------|:--------|
+| Day 1 | 调研gRPC与REST适用场景 | 30min |
+| Day 2 | 技术选型对比文档 | 45min |
+| Day 3 | 搭建原型验证可行性 | 60min |
+
+## Mini Todos
 - [ ] 调研gRPC与REST适用场景 [[docs/换微服务-调研]]
 - [ ] 技术选型对比文档 [[docs/换微服务-选型]]
 - [ ] 搭建原型验证可行性 [[docs/换微服务-原型]]
@@ -109,16 +133,28 @@ Content format:
 
 ## Details
 <User's original relevant text, preserved verbatim>
+
+## 学习检查
+<!-- 执行此 todo 时，由 ai-era-learning skill 引导填充 -->
+<!-- 以下为默认检查项，AI 应根据任务特征灵活调整，不必死守这四条 -->
+- [ ] 模式归类：这个任务涉及什么设计模式/架构模式？
+- [ ] 权衡对比：为什么选这个方案而不是其他？
+- [ ] 判断标准：下次遇到类似情况，依据什么条件做决策？
+- [ ] 自检：能描述给 AI 生成吗？能判断 AI 生成对错吗？能换场景复用吗？
 ```
 
 #### For long-term todos → `todo/mini_todo/<long-term-name>.md`
 
-One file per long-term todo, containing all mini-todos:
+One file per long-term todo, containing all mini-todos. Structure 由 AI 根据执行节奏引导的结果动态生成：
 
-Content format:
 ```markdown
 # <Long-term Todo Name>
 
+## 执行计划
+<!-- 由 AI 根据学习者情况和 mini-todo 特征自主生成 -->
+<!-- 粒度（天/周/阶段）、排列顺序、展开范围均由 AI 判断 -->
+
+## Mini Todos
 - [ ] <mini todo 1 action text> [[docs/<mini-label-1>]]
 - [ ] <mini todo 2 action text> [[docs/<mini-label-2>]]
 - [ ] <mini todo 3 action text> [[docs/<mini-label-3>]]
@@ -185,7 +221,7 @@ todo/
 
 - **NEVER** ask for confirmation before writing — fully automatic
 - **NEVER** fabricate content — only use what user provided
-- **NEVER** exceed 5 todos at top level — merge if needed
+- **NEVER** let top-level todo count overwhelm — merge related items when there are too many
 - **ALWAYS** preserve user's original wording in todo items
 - File paths are relative to working directory: `todo/TO_DO`, `todo/docs/`, `todo/mini_todo/`
 - `[[]]` uses Obsidian-style internal links (no `.md` extension)
