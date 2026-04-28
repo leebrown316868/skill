@@ -19,6 +19,35 @@ Break user input into minimal executable todos (max 5), output to `todo/TO_DO` w
 3. 清理 TO_DO.md 和 mini_todo/
 4. Report summary to user
 
+### 模式三：生成知识索引
+1. `/text-to-todo index` — 扫描 `todo/docs/` 下所有 .md 文件
+2. 读取每个文件的标题和内容，由 AI 根据内容语义进行主题归类（不要硬编码分类，根据实际内容决定）
+3. 输出到 `todo/KNOWLEDGE_INDEX.md`
+
+**索引格式**（分类由 AI 自主判断，以下为示例）：
+```markdown
+# 知识索引
+
+## 容器与镜像
+- [[docs/Kaniko构建镜像]] — CI 环境无 daemon 构建镜像
+- [[docs/skopeo基本原理]] — OCI Distribution Spec 直连仓库
+
+## 搜索与检索
+- [[docs/向量检索迁移]] — 从关键词匹配升级语义检索
+
+## 安全
+- [[docs/skopeo安全审查]] — 凭证权限、TLS、流量审查
+
+## 待归类
+- [[docs/xxx]] — 内容摘要
+```
+
+**规则**：
+- 同一主题下按学习顺序排列
+- 无法归类的放入"待归类"
+- 如果某个 doc 文件内容为空或只有模板占位符，标注为"未填写"
+- 每次运行覆盖 `todo/KNOWLEDGE_INDEX.md`，不追加
+
 ## Core Workflow
 
 ### Step 1: Parse User Input
