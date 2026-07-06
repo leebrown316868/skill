@@ -1,0 +1,53 @@
+# Phase 6：间隔复习
+
+## 触发条件
+
+Phase 5 完成或需要长期巩固时。
+
+## 复习机制
+
+### REVIEW_QUEUE.md
+
+```markdown
+# Review Queue
+
+| Due | Item | Source LR | Prompt | Result |
+|-----|------|-----------|--------|--------|
+| 2026-07-03 | Explain X without notes | 0003-x.md | "给我讲一遍 X 的核心原理" | pending |
+| 2026-07-05 | Debug Y scenario | 0005-y.md | "Y 出故障时你怎么查？" | pending |
+```
+
+### 每次启动时
+
+见 `workflows/startup.md` 的 Retrieval Warm-up。
+
+### 复习类型
+
+| 类型 | 频率 | 方法 |
+|------|------|------|
+| Recall | 每次启动 | 从 REVIEW_QUEUE 选一个到期条目 |
+| 小题 | 每周 | 基于薄弱点出 3-5 道 recall 题 |
+| 项目 | 每月 | 重做一个简化版 mini 项目 |
+
+### 间隔递增
+
+```
+首次复习：1 天后
+二次复习：3 天后
+三次复习：1 周后
+四次复习：2 周后
+五次复习：1 个月后
+```
+
+## 规则
+
+- **不展示答案在先** — 用户必须自己回忆
+- **纠正性反馈** — 用户回答后给出即时反馈
+- **降低并不等于忘记** — 检索吃力是正常的，不要因此标记为 weak-spot
+- **真的忘了才标记 weak-spot** — 如果完全想不起来核心概念，才更新 learning-record
+
+## REVIEW_QUEUE 维护
+
+- 每次写 learning record 时，预估一个下次复习日期
+- 复习通过 → 推后下一个复习间隔
+- 复习卡壳 → 更新 learning-record status 为 weak-spot，缩短间隔
