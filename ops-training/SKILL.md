@@ -1,6 +1,6 @@
 ---
 name: ops-training
-description: Use when user posts a company ops training task (实训), needs to quickly pass hands-on exams, drops syllabus items like "实训一 nginx", or says "做实训"/"继续实训". For fresh-grad ops engineers under time pressure needing rapid skill onboarding.
+description: 运维实训加速器。Use when user posts company ops training tasks (实训), needs to pass hands-on exams, or says 做实训/继续实训. NOT for self-directed learning or one-off Q&A.
 ---
 
 # 运维实训加速器
@@ -9,13 +9,45 @@ description: Use when user posts a company ops training task (实训), needs to 
 
 公司实训大纲就是路线图。AI 不帮你规划学什么——帮你快速做通、记牢、能应付上机考核。
 
-**核心原则**：做中学，产出即沉淀。不是先学再做，而是做着学着，做完东西自然留下。
+## 共享原则
 
-## 加载后自动推进
+> 做中学哲学、卡住5分钟规则、先跑通再理解、自检4问 — 以上概念的**唯一权威定义**见 `_shared/core-principles.md`。
+>
+> **执行本技能前，先 Read `_shared/core-principles.md`。** 本文件仅记录实训场景的特化规则。
 
-加载后检查 `ai/wiki/training-progress.md`：
-- 不存在 → 等待用户发第一个实训任务
-- 存在 → 读取进度，报出："当前进度：X/Y 已完成。最近在做 {当前项}。下一个实训发过来就开始。"
+## 启动协议（跨会话恢复）
+
+加载技能后**自动执行**，不等用户提问：
+
+### 1. 检查进度文件
+
+```
+ai/wiki/training-progress.md 是否存在？
+├── 存在 → 读取，获取进度、薄弱点、上次卡在哪
+│   └── 报出状态（5行以内）
+├── 不存在 → 等待用户发第一个实训任务
+```
+
+### 2. 状态报告模板
+
+```
+当前进度：X/Y 已完成
+最近在做：{当前实训项}
+上次做到：{具体步骤}
+上次卡在：{卡住的问题 / 无}
+建议下一步：{继续当前项 / 发下一个实训任务}
+```
+
+### 3. 如果上次有卡住的问题
+
+先问用户阻塞是否已解决，再继续推进。解决后更新 troubleshooting.md。
+
+### 4. Retrieval Warm-up（复习前置）
+
+如果薄弱点非空，启动时从薄弱点中抽 1 个提 recall 问题：
+- 先提问，不等用户翻笔记
+- 用户回答后给纠正性反馈
+- 答对 → 标记改善；答错 → 保留薄弱点
 
 ## 3 步循环
 
@@ -34,7 +66,7 @@ description: Use when user posts a company ops training task (实训), needs to 
 逐个子任务执行。每做完一个：
 
 1. **做通**：最小可行步骤搭起来，看到效果
-2. **记录**：写到 `ai/wiki/{技术名}/` 下，三个文件：
+2. **记录**：写到 `ai/wiki/{技术名}/` 下，三个文件（模板见下方）：
 
 ```
 ai/wiki/{技术名}/
@@ -56,39 +88,102 @@ ai/wiki/{技术名}/
 - 通过 → 标记完成，更新 `training-progress.md`
 - 卡住 → 标为薄弱点，下次实训前先花 5 分钟补
 
+## 格式模板
+
+### setup.md
+
+```markdown
+# {技术名} 搭建步骤
+
+## 环境
+- OS: {版本}
+- 工具版本: {具体版本号}
+
+## 步骤
+### 1. {步骤名}
+```bash
+{命令}
+```
+{这行在干什么}
+
+### 2. {步骤名}
+...
+
+## 验证
+```bash
+{验证命令}
+```
+预期输出: {什么算成功}
+```
+
+### commands.md
+
+```markdown
+# {技术名} 常用命令
+
+| 命令 | 作用 | 场景 |
+|------|------|------|
+| `{命令}` | {一句话说明} | {什么时候用} |
+```
+
+### troubleshooting.md
+
+```markdown
+# {技术名} 踩坑记录
+
+## {问题简述}
+- **现象**: {看到了什么}
+- **根因**: {为什么会这样}
+- **解决**: {怎么修的}
+- **预防**: {下次怎么避免}
+```
+
 ## 进度追踪
 
 维护 `ai/wiki/training-progress.md`：
 
 ```markdown
-## 实训进度
+# 实训进度
 
+## 已完成
 - [x] 基础环境搭建 (2024-xx-xx)
 - [x] Docker 基础操作
+
+## 进行中
 - [ ] PostgreSQL 主库搭建 ← 当前
+  - 上次做到: 安装完成，准备配置 pg_hba.conf
+  - 上次卡在: {问题 / 无}
 
 ## 薄弱点
-- pg WAL 机制还没完全搞懂
+- pg WAL 机制还没完全搞懂 → 下次复习优先
+
+## 下次建议
+- 继续配置 pg_hba.conf，完成后验证远程连接
 ```
+
+### 进度文件维护规则
+
+- **每完成一个子任务后更新**：AI 自动维护，不等用户要求
+- **记录"上次做到"**：精确到具体步骤，方便跨会话恢复
+- **薄弱点排序**：最近暴露的排最前
+- **下次建议**：只写一条，具体可执行
 
 ## 运维铁律
 
-1. **先跑通再理解**：搭起来看到效果 → 回头看架构 → 故意搞破坏练排障
+1. **先跑通再理解**：见 `_shared/core-principles.md` §6
 2. **AI 出配置，你读懂**：AI 可以生成配置，但你必须能解释每行为什么要有
-3. **卡住 5 分钟就问**：自查 → 问 AI（给完整上下文）→ 不行换思路
+3. **卡住 5 分钟就问**：见 `_shared/core-principles.md` §5
 4. **排障是最好的学习**：出问题先猜根因在哪 → 查日志/配置/网络 → 解决后复盘"根因是什么、怎么预防"
 
-## 与 learn-by-doing / ops-learning 的关系
+## 与其他技能的关系
 
-| | learn-by-doing | ops-learning | ops-training |
-|---|---|---|---|
-| 场景 | 自学新技术 | 深入学运维 | 快速过公司实训 |
-| 谁定内容 | AI 引导用户定 | AI 引导用户定 | 公司实训大纲 |
-| 阶段 | 7 | 6 | 3 |
-| 工作区 | 6+ 文件 | 4 文档 | 3 文件 + 进度 |
-| 检验 | 费曼检验 | 费曼+自检 | 快问快答 |
-
-三者可以叠加：实训用 ops-training 快速过，遇到想深入的技术用 ops-learning 补，自学新领域用 learn-by-doing。
+| 场景 | 用谁 | 交接条件 |
+|------|------|----------|
+| 自学全新技术领域 | learn-by-doing | 用户说"我想学 X" + 需要长期项目管理 |
+| 引导式学习（含为什么/架构问题） | ai-era-learning | 用户问"为什么用X"/"这段代码什么意思" |
+| 公司实训快速过关 | **ops-training（本技能）** | 用户发"实训一 nginx"等大纲任务 |
+| 复习已学内容 | deep-review | 用户说"复习"/"吃透"/"深挖" |
+| 实训做完想深入理解 | ops-training → ai-era-learning | 自检不通过时自动建议 |
 
 ## 禁止事项
 

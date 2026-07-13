@@ -8,7 +8,7 @@ Phase 0 完成。
 
 ### AI 初始化 RESOURCES.md
 
-按 `formats/RESOURCES-FORMAT.md` 填充：
+按 `formats/templates.md` 中 RESOURCES.md 格式填充：
 - 至少 1 个官方文档来源
 - 至少 1 个安装/环境搭建来源
 - 至少 1 个排障/社区来源
@@ -16,7 +16,7 @@ Phase 0 完成。
 
 ### AI 初始化 LEARNING_MAP.md
 
-按 `formats/LEARNING-MAP-FORMAT.md` 创建骨架：
+按 `formats/templates.md` 中 LEARNING_MAP.md 格式创建骨架：
 - 参考官方文档目录结构和 RESOURCES.md
 - 按模块划分，每个模块 ≤ 60 分钟
 - 标注哪些 in scope、哪些 out of scope

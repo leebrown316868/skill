@@ -20,7 +20,7 @@ Phase 1 完成。
 
 ### 2. 写成 MISSION.md
 
-按 `formats/MISSION-FORMAT.md` 编写。
+按 `formats/templates.md` 中 MISSION.md 格式编写。
 
 **重要：不要替用户写 Why。** 引导用户自己说。
 

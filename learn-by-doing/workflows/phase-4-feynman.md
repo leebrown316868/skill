@@ -13,7 +13,7 @@
 
 ### 2. 评判
 
-**讲清了 →** 写入 learning-record（`formats/LEARNING-RECORD-FORMAT.md`）：
+**讲清了 →** 写入 learning-record（模板见 `formats/templates.md`）：
 - evidence_type: feynman
 - status: active
 - Evidence: 能解释给 AI 并答追问
