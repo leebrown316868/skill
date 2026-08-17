@@ -7,7 +7,7 @@ description: AI时代学习引导。Use when learner says 我想学/做XXX, 继�
 
 ## 共享原则
 
-> 做中学哲学、四步法回答框架、费曼检验协议、自检4问、卡住5分钟规则、先跑通再理解、间隔复习队列 — 以上概念的**唯一权威定义**见 `_shared/core-principles.md`。
+> 做中学哲学、四步法回答框架、费曼检验协议、自检4问、求助升级机制、先跑通再理解、间隔复习队列 — 以上概念的**唯一权威定义**见 `_shared/core-principles.md`。
 >
 > **执行本技能前，先 Read `_shared/core-principles.md`。** 本文件仅记录 ai-era-learning 的特化规则。
 
@@ -194,9 +194,9 @@ docs/{任务名}.md 格式：
 - 不要解释每个参数含义，解释**为什么选这个方案**
 - 不要讲框架内部实现，讲**数据怎么流的**
 
-### 铁律 3：卡住 5 分钟就介入
+### 铁律 3：卡住就按求助升级介入
 
-见 `_shared/core-principles.md` §5。
+见 `_shared/core-principles.md` §5（独立定位约 15 分钟，之后逐级升级）。
 
 ### 铁律 4：先跑通，再理解，最后优化
 

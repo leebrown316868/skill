@@ -11,7 +11,7 @@ description: 运维实训加速器。Use when user posts company ops training ta
 
 ## 共享原则
 
-> 做中学哲学、卡住5分钟规则、先跑通再理解、自检4问 — 以上概念的**唯一权威定义**见 `_shared/core-principles.md`。
+> 做中学哲学、求助升级机制、先跑通再理解、自检4问 — 以上概念的**唯一权威定义**见 `_shared/core-principles.md`。
 >
 > **执行本技能前，先 Read `_shared/core-principles.md`。** 本文件仅记录实训场景的特化规则。
 
@@ -172,7 +172,7 @@ ai/wiki/{技术名}/
 
 1. **先跑通再理解**：见 `_shared/core-principles.md` §6
 2. **AI 出配置，你读懂**：AI 可以生成配置，但你必须能解释每行为什么要有
-3. **卡住 5 分钟就问**：见 `_shared/core-principles.md` §5
+3. **卡住就走求助升级**：见 `_shared/core-principles.md` §5（实训时间敏感，独立定位时长可压缩）
 4. **排障是最好的学习**：出问题先猜根因在哪 → 查日志/配置/网络 → 解决后复盘"根因是什么、怎么预防"
 
 ## 与其他技能的关系

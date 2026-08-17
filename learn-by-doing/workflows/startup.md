@@ -4,7 +4,7 @@
 
 ---
 
-## 1. 读取 LEARNING_STATE.md
+## 1. 读取 LEARNING_STATE.md + HANDOFF.md
 
 ```
 LEARNING_STATE.md 是否存在？
@@ -17,6 +17,11 @@ LEARNING_STATE.md 是否存在？
     ├── 有 learning-records/ 但 ai/wiki/ 不全 → Phase 3-4
     ├── 空目录 → 进入 Phase 0
     └── 创建 LEARNING_STATE.md
+
+HANDOFF.md 是否存在？
+├── 存在 → 读取，恢复上次会话上下文（任务编号/已完成/未理解/下一任务）
+│   比 LEARNING_STATE.md 的 Last session summary 更详细，优先用它回答"上次学到哪"
+└── 不存在 → 跳过
 ```
 
 ## 2. Retrieval Warm-up（复习前置）
@@ -31,6 +36,8 @@ LEARNING_STATE.md 是否存在？
 6. 记录到 REVIEW_QUEUE.md
 
 **如果没有任何前序记录，跳过 warm-up。**
+
+**当天速回忆检查**：如果 REVIEW_QUEUE 里有"今天到期"的条目（上次会话当天学的新知识点），先做当天复习再继续任务。
 
 ## 3. 状态报告
 
